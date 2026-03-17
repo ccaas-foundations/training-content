@@ -9,7 +9,7 @@
 
 ## Why This Matters
 
-XML remains a dominant data exchange format in enterprise systems, particularly in legacy integrations, SOAP-based web services, and configuration files. This week focuses on document processing within Spring Boot applications. Mastering XML processing is the first step in that journey -- it establishes the patterns for data serialization and deserialization that you will see again with JSON on Tuesday.
+XML remains a dominant data exchange format in enterprise systems, particularly in legacy integrations, SOAP-based web services, and configuration files. This week focuses on document processing within Spring Boot applications. Mastering XML processing is the first step in that journey -- it establishes the patterns for data serialization and deserialization that you will see again with JSON.
 
 ## The Concept
 

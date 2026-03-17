@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pizza>
+    <customerEmail>johndoe@gmail.com</customerEmail>
+    <id>5</id>
+    <topping>Cheese</topping>
+    <topping>Pepperoni</topping>
+</pizza>
