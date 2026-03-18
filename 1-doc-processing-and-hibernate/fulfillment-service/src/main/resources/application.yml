@@ -1,0 +1,13 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: fulfillment-service
+  artemis:
+    mode: native #standalone artemis broker; not embedded in spring boot app
+    broker-url: tcp://localhost:61616 #default broker location for artemis
+    user: admin
+    password: admin
+  jms:
+    pub-sub-domain: false #configuring to act as a queue rather than a topic
