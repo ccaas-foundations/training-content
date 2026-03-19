@@ -13,18 +13,28 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private int customerId;
+    @ManyToOne
+    private Customer customer;
 
     private String sku;
+
+    private OrderStatus orderStatus;
 
     private LocalDateTime timestamp;
 
     public Order() {
     }
 
-    public Order(int customerId, String sku, LocalDateTime timestamp) {
-        this.customerId = customerId;
+    public Order(Customer customer, String sku, LocalDateTime timestamp) {
+        this.customer = customer;
         this.sku = sku;
+        this.timestamp = timestamp;
+    }
+
+    public Order(Customer customer, String sku, OrderStatus orderStatus, LocalDateTime timestamp) {
+        this.customer = customer;
+        this.sku = sku;
+        this.orderStatus = orderStatus;
         this.timestamp = timestamp;
     }
 
@@ -36,12 +46,12 @@ public class Order {
         this.id = id;
     }
 
-    public int getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public String getSku() {
@@ -60,25 +70,35 @@ public class Order {
         this.timestamp = timestamp;
     }
 
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && customerId == order.customerId && Objects.equals(sku, order.sku) && Objects.equals(timestamp, order.timestamp);
+        return id == order.id && Objects.equals(customer, order.customer) && Objects.equals(sku, order.sku) && orderStatus == order.orderStatus && Objects.equals(timestamp, order.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customerId, sku, timestamp);
+        return Objects.hash(id, customer, sku, orderStatus, timestamp);
     }
 
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
-                ", customerId=" + customerId +
+                ", customer=" + customer +
                 ", sku='" + sku + '\'' +
+                ", orderStatus=" + orderStatus +
                 ", timestamp=" + timestamp +
                 '}';
     }

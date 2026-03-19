@@ -9,7 +9,7 @@
 
 ## Why This Matters
 
-Earlier today, you learned what ORM is and how it solves the impedance mismatch between Java objects and relational databases. Now it is time to put that knowledge into practice. Configuring Hibernate and annotating entity classes are the foundational skills that everything else this week builds upon -- from querying with HQL and the Criteria API (Thursday) to understanding Hibernate's architecture and advanced features (Friday).
+Earlier today, you learned what ORM is and how it solves the impedance mismatch between Java objects and relational databases. Now it is time to put that knowledge into practice. Configuring Hibernate and annotating entity classes are the foundational skills that everything else this week builds upon -- from querying with HQL and the Criteria API to understanding Hibernate's architecture and advanced features.
 
 ### Hibernate Architecture Overview
 

@@ -16,6 +16,7 @@
 
 <!--            include entity classes-->
         <mapping class="dev.revature.models.Order" />
+        <mapping class="dev.revature.models.Customer" />
 
     </session-factory>
 </hibernate-configuration>
