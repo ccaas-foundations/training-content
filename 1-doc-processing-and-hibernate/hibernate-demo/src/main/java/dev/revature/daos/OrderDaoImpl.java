@@ -5,10 +5,13 @@ import dev.revature.models.OrderStatus;
 import dev.revature.utility.HibernateUtil;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDaoImpl implements OrderDao{
@@ -69,7 +72,59 @@ public class OrderDaoImpl implements OrderDao{
     }
 
     @Override
-    public List<Order> getOrdersByCustomerAndStatus(int CustomerId, OrderStatus status) {
-        return null;
+    public List<Order> getOrdersByCustomerAndStatus(int customerId, OrderStatus status) {
+        try(Session session = HibernateUtil.getSession()){
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+            Root<Order> root = cq.from(Order.class);
+            cq.select(root).where(
+                cb.equal(root.get("customer").get("id"), customerId),
+                cb.equal(root.get("orderStatus"), status)
+            );
+            return session.createQuery(cq).list();
+        }
+    }
+
+    @Override
+    public List<Order> findOrdersBeforeDate(LocalDateTime date) {
+        try(Session session = HibernateUtil.getSession()){
+            return session.createQuery(
+                    "from Order o where o.timestamp < :date", Order.class)
+                    .setParameter("date", date)
+                    .list();
+        }
+    }
+
+    @Override
+    public long countOrdersByCustomerId(int customerId) {
+        try(Session session = HibernateUtil.getSession()){
+            return session.createQuery(
+                    "select count(o) from Order o where o.customer.id = :custId", Long.class)
+                    .setParameter("custId", customerId)
+                    .uniqueResult();
+        }
+    }
+
+    @Override
+    public List<Order> findOrdersWithComplexFilterByCriteria(String sku, LocalDateTime afterDate, OrderStatus status) {
+        try(Session session = HibernateUtil.getSession()){
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+            Root<Order> root = cq.from(Order.class);
+
+            List<Predicate> predicates = new ArrayList<>();
+            if (sku != null) {
+                predicates.add(cb.equal(root.get("sku"), sku));
+            }
+            if (afterDate != null) {
+                predicates.add(cb.greaterThan(root.get("timestamp"), afterDate));
+            }
+            if (status != null) {
+                predicates.add(cb.equal(root.get("orderStatus"), status));
+            }
+
+            cq.select(root).where(cb.and(predicates.toArray(new Predicate[0])));
+            return session.createQuery(cq).list();
+        }
     }
 }
