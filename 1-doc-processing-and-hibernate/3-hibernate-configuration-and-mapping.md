@@ -10,9 +10,50 @@
 ## Why This Matters
 
 Earlier today, you learned what ORM is and how it solves the impedance mismatch between Java objects and relational databases. Now it is time to put that knowledge into practice. Configuring Hibernate and annotating entity classes are the foundational skills that everything else this week builds upon -- from querying with HQL and the Criteria API (Thursday) to understanding Hibernate's architecture and advanced features (Friday).
+
+### Hibernate Architecture Overview
+
+Hibernate operates as a middleware layer between Java application code and the relational database. Its architecture can be visualized in layers:
+
+```
++--------------------------------------------------+
+|              Java Application Code               |
+|   (Entities, DAOs, Services, Controllers)        |
++--------------------------------------------------+
+                      |
+                      v
++--------------------------------------------------+
+|              Hibernate ORM Layer                 |
+|   +------------------------------------------+  |
+|   |  Configuration                           |  |
+|   |  SessionFactory                          |  |
+|   |  Session                                 |  |
+|   |  Transaction                             |  |
+|   |  Query (HQL, Criteria, Native SQL)       |  |
+|   |  First-Level Cache                       |  |
+|   |  Second-Level Cache                      |  |
+|   +------------------------------------------+  |
++--------------------------------------------------+
+                      |
+                      v
++--------------------------------------------------+
+|              JDBC / Connection Pool              |
+|   (HikariCP, C3P0, etc.)                        |
++--------------------------------------------------+
+                      |
+                      v
++--------------------------------------------------+
+|              Relational Database                 |
+|   (MySQL, PostgreSQL, Oracle, etc.)              |
++--------------------------------------------------+
+```
+
+
 ## The Core Workflow
 
-Hibernate follows a strict hierarchy to interact with the database. Every database operation flows through this chain:
+Hibernate's API is built around four primary interfaces: Every database operation flows through this chain:
+
+
 
 ```
 hibernate.cfg.xml
@@ -23,7 +64,7 @@ hibernate.cfg.xml
        ↓
   Transaction          ← wraps your DB operations
        ↓
-  Session Methods      ← save(), get(), update(), delete(), etc.
+  Session Methods      ← persist(), find(), merge(), remove(), etc.
 ```
 
 ---
@@ -130,7 +171,7 @@ Session session = sessionFactory.openSession();
 
 **Key points:**
 - Wraps a single JDBC connection
-- Maintains a **first-level cache** (identity map) — if you `get()` the same entity twice, the second call hits the cache, not the DB
+- Maintains a **first-level cache** (identity map) — if you `find()` the same entity twice, the second call hits the cache, not the DB
 - Should be opened and closed within the same thread
 - Always close it in a `finally` block or use try-with-resources
 
@@ -161,56 +202,110 @@ try (Session session = sessionFactory.openSession()) {
 }
 ```
 
+### ACID Properties
+
+ACID is an acronym for the four guarantees that a database transaction must provide:
+
+| Property        | Definition                                                       |
+|-----------------|------------------------------------------------------------------|
+| **Atomicity**   | A transaction is all-or-nothing. If any part fails, the entire transaction is rolled back. |
+| **Consistency** | A transaction moves the database from one valid state to another. Constraints (foreign keys, checks) are always satisfied. |
+| **Isolation**   | Concurrent transactions do not interfere with each other. Each transaction sees a consistent snapshot of the data. |
+| **Durability**  | Once committed, the transaction's changes survive system crashes. Data is written to persistent storage. |
+
+### ACID in Hibernate
+
+Hibernate transactions map directly to database transactions:
+
+```java
+Session session = sessionFactory.openSession();
+Transaction tx = session.beginTransaction();
+
+try {
+
+    Transaction tx = session.beginTransaction();
+
+    session.persist(order);          // create order
+    product.setStock(product.getStock() - qty); // update inventory
+
+    // Both changes succeed together (Atomicity)
+    tx.commit();
+} catch (Exception e) {
+    // Both changes are rolled back together (Atomicity)
+    tx.rollback();
+    throw e;
+} finally {
+    session.close();
+}
+```
+
 ---
 
 ## 5. Session Methods
 
-### Persisting
+> **Hibernate 6+ / 7.x:** The legacy methods `save()`, `update()`, `saveOrUpdate()`, `delete()`, `get()`, and `load()` have been removed. Use the JPA-standard replacements below.
 
-| Method | Behavior |
+| Legacy (≤5, removed) | Modern (6+) |
 |---|---|
-| `session.save(entity)` | Inserts entity, returns generated ID |
-| `session.persist(entity)` | Inserts entity, JPA-standard (void return) |
-| `session.saveOrUpdate(entity)` | Inserts if new, updates if detached |
-| `session.merge(entity)` | Merges detached entity state into session |
+| `save()` | `persist()` |
+| `update()` | `merge()` |
+| `saveOrUpdate()` | `persist()` or `merge()` |
+| `delete()` | `remove()` |
+| `get()` | `find()` |
+| `load()` | `getReference()` |
+
+### Persisting
 
 ```java
 Product p = new Product("Laptop", 999.99);
-Long id = (Long) session.save(p);
+session.persist(p);   // INSERT — void return, JPA standard
+```
+
+To insert or update based on whether an ID is present, use `merge()`:
+
+```java
+session.merge(product);  // inserts if new, updates if detached
 ```
 
 ### Reading
 
 | Method | Behavior |
 |---|---|
-| `session.get(Class, id)` | Returns entity or **null** if not found |
-| `session.load(Class, id)` | Returns a **proxy** — throws exception if not found on access |
+| `session.find(Class, id)` | Returns entity or **null** if not found — hits DB immediately |
+| `session.getReference(Class, id)` | Returns a **proxy** — no DB hit until fields accessed, throws if not found on access |
 
 ```java
-Product p = session.get(Product.class, 1L);   // null-safe
-Product p = session.load(Product.class, 1L);  // proxy, lazy
+Product p = session.find(Product.class, 1L);           // null-safe, immediate SELECT
+Product ref = session.getReference(Product.class, 1L); // proxy, deferred SELECT
 ```
 
-Prefer `get()` when you're not sure the record exists. Use `load()` when you need a proxy reference (e.g., setting a foreign key without a full fetch).
+Prefer `find()` when you're not sure the record exists. Use `getReference()` when you only need a reference to set a FK — it avoids an unnecessary SELECT:
+
+```java
+// Setting a FK without loading the full parent:
+Order ref = session.getReference(Order.class, 5L);  // no DB hit
+orderItem.setOrder(ref);                             // Hibernate just needs the ID
+session.persist(orderItem);                          // one INSERT, no SELECT
+```
+
+Note: a plain `new Order()` with an ID set manually will **not** work here — Hibernate only trusts references it manages. `getReference()` is the right tool.
 
 ### Updating
 
 ```java
-// If entity is in the current session (persistent state):
+// Persistent entity (loaded in this session) — just change the field:
 product.setPrice(1099.99);
-tx.commit();  // Hibernate detects the change via dirty checking — no explicit update needed
+tx.commit();  // dirty checking fires automatically — no explicit call needed
 
-// If entity came from outside the session (detached state):
-session.update(product);
-// or
-session.saveOrUpdate(product);
+// Detached entity (came from outside this session):
+Product updated = session.merge(detachedProduct);  // returns the managed instance
 ```
 
 ### Deleting
 
 ```java
-Product p = session.get(Product.class, 1L);
-session.delete(p);
+Product p = session.find(Product.class, 1L);
+session.remove(p);   // entity must be persistent (loaded in this session)
 ```
 
 ### Querying
@@ -225,7 +320,7 @@ List<Product> products = session.createQuery(
 // Native SQL — when you need DB-specific queries
 List<Product> products = session.createNativeQuery(
     "SELECT * FROM products WHERE price > 500", Product.class)
-    .list();
+    .getResultList();
 ```
 
 ---
@@ -236,13 +331,13 @@ Understanding which state your object is in determines which methods to use.
 
 ```
 new MyEntity()          →  Transient   (Hibernate doesn't know about it)
-      ↓  save() / persist()
+      ↓  persist()
    Persistent           (session is tracking it, changes auto-synced)
       ↓  session closes / evict()
    Detached             (was persistent, session is gone)
-      ↓  merge() / update()
+      ↓  merge()
    Persistent again
-      ↓  delete()
+      ↓  remove()
    Removed              (scheduled for deletion on commit)
 ```
 
@@ -384,7 +479,7 @@ public class OrderService {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            session.save(order);
+            session.persist(order);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
@@ -394,7 +489,7 @@ public class OrderService {
 
     public Order findOrder(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.get(Order.class, id);
+            return session.find(Order.class, id);
         }
     }
 
@@ -402,7 +497,7 @@ public class OrderService {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            session.saveOrUpdate(order);
+            session.merge(order);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
@@ -414,8 +509,8 @@ public class OrderService {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            Order order = session.get(Order.class, id);
-            if (order != null) session.delete(order);
+            Order order = session.find(Order.class, id);
+            if (order != null) session.remove(order);
             tx.commit();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
@@ -435,13 +530,11 @@ SessionFactory             →  singleton, built once, thread-safe
 Session                    →  per-request, not thread-safe, has 1st level cache
 Transaction                →  wraps all writes, commit or rollback
 
-session.save()             →  insert, returns ID
-session.get()              →  select by ID, returns null if missing
-session.load()             →  select by ID, returns proxy, throws if missing
-session.update()           →  update detached entity
-session.saveOrUpdate()     →  insert or update based on ID
-session.merge()            →  merge detached state into current session
-session.delete()           →  delete persistent entity
+session.persist()          →  insert (Hibernate 6+, replaces save())
+session.find()             →  select by ID, returns null if missing (replaces get())
+session.getReference()     →  select by ID, returns proxy, throws if missing (replaces load())
+session.merge()            →  insert or update detached entity (replaces update()/saveOrUpdate())
+session.remove()           →  delete persistent entity (replaces delete())
 
 @Entity                    →  mark class as table-mapped
 @Table(name="...")         →  specify table name
