@@ -96,7 +96,7 @@ public class DataLoader implements CommandLineRunner {
         for(Order shippedOrder : shippedOrders){
             System.out.println(shippedOrder);
         }
-         */
+
 
         Order newOrder = new Order(c3, null, ShippingRegion.MIDWEST, "spoon", OrderStatus.RECEIVED, LocalDateTime.now());
 
@@ -112,7 +112,7 @@ public class DataLoader implements CommandLineRunner {
 
         Order persistedOrder = orderRepository.save(newOrder);
         System.out.println(persistedOrder);
-
+        */
 
     }
 }
