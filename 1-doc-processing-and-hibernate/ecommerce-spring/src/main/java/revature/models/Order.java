@@ -14,19 +14,15 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-
     @ManyToOne
     private Customer customer;
-
     @ManyToOne
     private Warehouse warehouse;
 
     private ShippingRegion shippingRegion;
-
     private String sku;
-
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
     private LocalDateTime timestamp;
 
     public Order() {
@@ -40,6 +36,15 @@ public class Order {
 
     public Order(Customer customer, String sku, OrderStatus orderStatus, LocalDateTime timestamp) {
         this.customer = customer;
+        this.sku = sku;
+        this.orderStatus = orderStatus;
+        this.timestamp = timestamp;
+    }
+
+    public Order(Customer customer, Warehouse warehouse, ShippingRegion shippingRegion, String sku, OrderStatus orderStatus, LocalDateTime timestamp) {
+        this.customer = customer;
+        this.warehouse = warehouse;
+        this.shippingRegion = shippingRegion;
         this.sku = sku;
         this.orderStatus = orderStatus;
         this.timestamp = timestamp;

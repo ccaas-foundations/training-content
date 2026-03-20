@@ -17,8 +17,8 @@ public class Warehouse {
     private String location;
     private ShippingRegion shippingRegion;
 
-    @ElementCollection
-    @CollectionTable(name = "warehouse_skus", joinColumns = @JoinColumn(name = "warehouse_id"))
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name = "warehouse_stock", joinColumns = @JoinColumn(name = "warehouse_id"))
     @Column(name = "sku")
     private Set<String> itemsInStock = new HashSet<>();
 
