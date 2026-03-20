@@ -161,13 +161,15 @@ Setting `pub-sub-domain=false` uses queues (point-to-point). Set it to `true` fo
 
 - download Apache Artemis: https://artemis.apache.org/components/artemis/download/
 
-- create your artemis broker
+- navigate into the bin folder within your artemis directory
+- create your artemis broker:
 
 ```
-./artemis create ecommerce-broker --user admin --password admin --require-login
+./artemis.cmd create ../../ecommerce-broker 
+--user admin --password admin --require-login
 ```
 
-- navigate into the directory of our broker
+- navigate into the bin directory of our broker
 - start/run the broker
 
 ```
