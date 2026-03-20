@@ -21,7 +21,9 @@ public class Order {
 
     private ShippingRegion shippingRegion;
     private String sku;
-    @Enumerated(EnumType.STRING)
+
+    //annotation can be used to store your enums in the database as a string
+//    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private LocalDateTime timestamp;
 
