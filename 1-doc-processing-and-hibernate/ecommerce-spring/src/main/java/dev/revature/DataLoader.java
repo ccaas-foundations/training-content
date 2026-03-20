@@ -1,14 +1,13 @@
-package revature;
+package dev.revature;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import revature.models.*;
-import revature.repositories.CustomerRepository;
-import revature.repositories.OrderRepository;
-import revature.repositories.WarehouseRepository;
+import dev.revature.models.*;
+import dev.revature.repositories.CustomerRepository;
+import dev.revature.repositories.OrderRepository;
+import dev.revature.repositories.WarehouseRepository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Component

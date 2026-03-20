@@ -1,10 +1,10 @@
-package revature.services;
+package dev.revature.services;
 
 import org.springframework.stereotype.Service;
-import revature.models.Order;
-import revature.models.OrderStatus;
-import revature.models.Warehouse;
-import revature.repositories.WarehouseRepository;
+import dev.revature.models.Order;
+import dev.revature.models.OrderStatus;
+import dev.revature.models.Warehouse;
+import dev.revature.repositories.WarehouseRepository;
 
 import java.util.List;
 
