@@ -92,7 +92,7 @@ Manage all Spring versions through the BOM — do not specify versions on indivi
       service/AgentService.java
     src/main/resources/
       application.yml
-      data.sql
+      data.sql // or a CommandLineRunner
   discovery-service/
     pom.xml
     src/main/java/com/revature/discovery/
@@ -139,7 +139,7 @@ BILLING, TECHNICAL, SALES, GENERAL
 
 ## Seed data
 
-Load on startup via `data.sql`. Agents must cover all four CallCategory values with at least two AVAILABLE agents per category. Include at least one ON_CALL and one OFFLINE agent to make the availability query meaningful.
+Load on startup via `data.sql` or through a CommandLineRunner. Agents must cover all four CallCategory values with at least two AVAILABLE agents per category. Include at least one ON_CALL and one OFFLINE agent to make the availability query meaningful.
 
 **Minimum seed set:** 5 agents with the following coverage —
 
@@ -231,7 +231,7 @@ Expose the following endpoints:
 | GET | /agents/{id} | Single agent with categories |
 | GET | /agents?status=AVAILABLE&category={category} | Available agents for a category |
 | PUT | /agents/{id}/status | Update status — body: `{ "status": "ON_CALL" }` |
-| GET | /agents/{id}/calls | InboundCall records for this agent |
+| GET | /calls?customer-id={id} | InboundCall records for this agent |
 | POST | /agents | Create agent (seeding and admin use) |
 
 Return 404 if an agent is not found. Use `ResponseStatusException`.
