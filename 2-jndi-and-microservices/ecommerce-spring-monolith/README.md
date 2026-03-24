@@ -1,4 +1,4 @@
-# ecommerce-spring
+# ecommerce-spring-monolith
 
 A message-driven Spring Boot microservice that processes incoming e-commerce orders from a JMS queue, assigns warehouse fulfillment, and persists order state.
 

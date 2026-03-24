@@ -1,5 +1,6 @@
-package dev.revature.models;
+package dev.revature.entities;
 
+import dev.revature.enums.ShippingRegion;
 import jakarta.persistence.*;
 
 import java.util.HashSet;

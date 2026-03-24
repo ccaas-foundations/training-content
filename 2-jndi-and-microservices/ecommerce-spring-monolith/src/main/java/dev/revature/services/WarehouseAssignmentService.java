@@ -1,28 +1,25 @@
 package dev.revature.services;
 
+import dev.revature.dtos.WarehouseSummary;
 import org.springframework.stereotype.Service;
-import dev.revature.models.Order;
-import dev.revature.models.Warehouse;
-import dev.revature.repositories.WarehouseRepository;
+import dev.revature.entities.Order;
 
-import java.util.List;
+
 import java.util.Optional;
 
 @Service
 public class WarehouseAssignmentService {
 
-    private final WarehouseRepository warehouseRepository;
 
-    public WarehouseAssignmentService(WarehouseRepository warehouseRepository){
-        this.warehouseRepository = warehouseRepository;
+    public WarehouseAssignmentService(){
     }
 
-    public Optional<Warehouse> findWarehouseForOrder(Order order){
-        List<Warehouse> warehouseCandidates = warehouseRepository.findByShippingRegionAndSku(order.getShippingRegion(), order.getSku());
-        if(warehouseCandidates.isEmpty()){
-            return Optional.empty();
-        } 
-        return Optional.of(warehouseCandidates.getFirst());
+    public Optional<WarehouseSummary> findWarehouseForOrder(Order order){
+
+        // we have to get this warehouse information from the warehouse service
+            // we'll use RestClient to help us
+
+        return Optional.empty();
     }
 
 

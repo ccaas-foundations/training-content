@@ -1,4 +1,4 @@
-package dev.revature.models;
+package dev.revature.enums;
 
 public enum OrderStatus {
 

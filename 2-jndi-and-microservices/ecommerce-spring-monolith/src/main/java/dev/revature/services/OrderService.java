@@ -1,9 +1,9 @@
 package dev.revature.services;
 
+import dev.revature.dtos.WarehouseSummary;
 import org.springframework.stereotype.Service;
-import dev.revature.models.Order;
-import dev.revature.models.OrderStatus;
-import dev.revature.models.Warehouse;
+import dev.revature.entities.Order;
+import dev.revature.enums.OrderStatus;
 import dev.revature.repositories.OrderRepository;
 
 import java.time.LocalDateTime;
@@ -24,9 +24,10 @@ public class OrderService {
         order.setTimestamp(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.RECEIVED);
 
-        Optional<Warehouse> warehouse = warehouseAssignmentService.findWarehouseForOrder(order);
+        // we can just use the dto here for the summary (or our warehouse representation of our order-service)
+        Optional<WarehouseSummary> warehouse = warehouseAssignmentService.findWarehouseForOrder(order);
         if(warehouse.isPresent()){
-            order.setWarehouse(warehouse.get());
+            //order.setWarehouseId(warehouse.get());
             order.setOrderStatus(OrderStatus.ASSIGNED);
         } else {
             order.setOrderStatus(OrderStatus.CANCELLED);

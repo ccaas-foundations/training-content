@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import dev.revature.models.ShippingRegion;
-import dev.revature.models.Warehouse;
+import dev.revature.enums.ShippingRegion;
+import dev.revature.entities.Warehouse;
 
 import java.util.List;
 

@@ -2,8 +2,8 @@ package dev.revature.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import dev.revature.models.Order;
-import dev.revature.models.OrderStatus;
+import dev.revature.entities.Order;
+import dev.revature.enums.OrderStatus;
 
 import java.util.List;
 

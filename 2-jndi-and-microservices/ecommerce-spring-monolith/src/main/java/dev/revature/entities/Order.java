@@ -1,7 +1,9 @@
-package dev.revature.models;
+package dev.revature.entities;
 
 
 
+import dev.revature.enums.OrderStatus;
+import dev.revature.enums.ShippingRegion;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,8 +18,9 @@ public class Order {
     private int id;
     @ManyToOne
     private Customer customer;
-    @ManyToOne
-    private Warehouse warehouse;
+
+
+    private int warehouseId;
 
     private ShippingRegion shippingRegion;
     private String sku;
@@ -43,9 +46,9 @@ public class Order {
         this.timestamp = timestamp;
     }
 
-    public Order(Customer customer, Warehouse warehouse, ShippingRegion shippingRegion, String sku, OrderStatus orderStatus, LocalDateTime timestamp) {
+    public Order(Customer customer, int warehouseId, ShippingRegion shippingRegion, String sku, OrderStatus orderStatus, LocalDateTime timestamp) {
         this.customer = customer;
-        this.warehouse = warehouse;
+        this.warehouseId = warehouseId;
         this.shippingRegion = shippingRegion;
         this.sku = sku;
         this.orderStatus = orderStatus;
@@ -68,12 +71,12 @@ public class Order {
         this.customer = customer;
     }
 
-    public Warehouse getWarehouse() {
-        return warehouse;
+    public int getWarehouseId() {
+        return warehouseId;
     }
 
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
+    public void setWarehouseId(int warehouseId) {
+        this.warehouseId = warehouseId;
     }
 
     public ShippingRegion getShippingRegion() {
@@ -114,12 +117,12 @@ public class Order {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return id == order.id && Objects.equals(customer, order.customer) && Objects.equals(warehouse, order.warehouse) && Objects.equals(shippingRegion, order.shippingRegion) && Objects.equals(sku, order.sku) && orderStatus == order.orderStatus && Objects.equals(timestamp, order.timestamp);
+        return id == order.id && Objects.equals(customer, order.customer) && Objects.equals(warehouseId, order.warehouseId) && Objects.equals(shippingRegion, order.shippingRegion) && Objects.equals(sku, order.sku) && orderStatus == order.orderStatus && Objects.equals(timestamp, order.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customer, warehouse, shippingRegion, sku, orderStatus, timestamp);
+        return Objects.hash(id, customer, warehouseId, shippingRegion, sku, orderStatus, timestamp);
     }
 
     @Override
@@ -127,7 +130,7 @@ public class Order {
         return "Order{" +
                 "id=" + id +
                 ", customer=" + customer +
-                ", warehouse=" + warehouse +
+                ", warehouse=" + warehouseId +
                 ", shippingRegion='" + shippingRegion + '\'' +
                 ", sku='" + sku + '\'' +
                 ", orderStatus=" + orderStatus +

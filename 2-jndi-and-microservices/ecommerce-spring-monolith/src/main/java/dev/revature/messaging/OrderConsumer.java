@@ -2,7 +2,7 @@ package dev.revature.messaging;
 
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
-import dev.revature.models.Order;
+import dev.revature.entities.Order;
 import dev.revature.services.OrderService;
 import tools.jackson.databind.json.JsonMapper;
 

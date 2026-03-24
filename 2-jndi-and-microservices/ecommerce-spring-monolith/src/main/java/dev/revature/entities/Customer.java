@@ -1,4 +1,4 @@
-package dev.revature.models;
+package dev.revature.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
