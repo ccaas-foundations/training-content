@@ -73,7 +73,7 @@ These variables are injected only when IntelliJ launches the app. They don't aff
 
 ---
 
-## Exercise — Securing the Ecommerce Application
+## Securing the Ecommerce Application
 
 ### Goal
 
