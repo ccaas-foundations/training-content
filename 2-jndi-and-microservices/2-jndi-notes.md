@@ -1,5 +1,7 @@
 # JNDI - Java Naming and Directory Interface
 
+As you transition toward building distributed microservices, it is critical to understand how enterprise Java applications historically solved the problem of "finding resources." Before modern dependency injection frameworks (like Spring) and service registries (like Eureka) existed, JNDI was the standard API used to locate databases, message queues, and other services across a network. Understanding JNDI provides essential historical context and is still required when deploying applications to traditional Java EE application servers like Tomcat, WildFly, or WebLogic.
+
 ## What Is JNDI?
 
 JNDI is a Java API that provides a unified interface for **looking up named resources** from a directory or naming service. The key word is *lookup* - your application never configures these resources itself. Instead, the **application server** (Tomcat, WildFly, WebLogic, etc.) maintains a server-side registry of named objects. Your code asks that registry for a resource by name at runtime, and the server hands back a fully configured object - connection pool, message factory, whatever was bound there by ops. Think of it as a phone book that lives on the server: your code only ever reads from it, and someone else entirely is responsible for keeping the entries up to date.
@@ -13,6 +15,12 @@ Common resources bound into JNDI:
 - EJB references
 
 JNDI is part of the Java EE / Jakarta EE standard and is natively supported by application servers like Tomcat, WildFly, WebLogic, and WebSphere. It can also be configured in standalone Spring Boot apps with embedded Tomcat.
+
+### Core Terminology
+
+1. **Name:** The identifier used to register and look up an object. This is typically represented as a hierarchical string, often using a URL-like syntax (e.g., `java:comp/env/jdbc/myDataSource`).
+2. **Context:** The core interface in JNDI (`javax.naming.Context`). A Context represents a set of name-to-object bindings. It is the starting point (the root) for resolving names. Every JNDI lookup starts by obtaining an `InitialContext`.
+3. **Binding:** The association between a Name and an Object. When an administrator configures an application server, they "bind" a DataSource object to a specific name.
 
 ---
 
@@ -37,6 +45,97 @@ The name `java:comp/env/jdbc/myDb` is a path through the tree:
 This scoping matters because `java:comp` is isolated per application - two apps deployed to the same server can each bind a `java:comp/env/jdbc/myDb` without colliding, just as two users on the same machine can each have their own `/home/user/documents/` without stepping on each other. Resources bound higher up the tree (e.g., `java:global/`) are server-wide and accessible to all apps, analogous to files in `/etc` that any process can read.
 
 When you see `java:comp/env/` as a prefix in JNDI lookups, it's not boilerplate - it's the specific context where application-level resource references live by convention.
+
+---
+
+## Binding JNDI Objects
+
+**Binding** is the act of registering an object in the JNDI namespace under a given name. This is what ops (or an app server admin) does - before your application ever starts, they configure the server to associate a name like `java:comp/env/jdbc/myDb` with a fully configured `DataSource` object. Your code never calls `bind()` in production; that's the whole point.
+
+Programmatically, binding looks like this:
+
+```java
+Context ctx = new InitialContext();
+ctx.bind("java:comp/env/jdbc/myDb", myDataSource);
+```
+
+You can also **rebind** to replace an existing binding without error (unlike `bind()`, which throws if the name is already taken):
+
+```java
+ctx.rebind("java:comp/env/jdbc/myDb", updatedDataSource);
+```
+
+And **unbind** to remove a name entirely:
+
+```java
+ctx.unbind("java:comp/env/jdbc/myDb");
+```
+
+In practice, developers only need to know `bind()` exists at a conceptual level - understanding it is how the server registers resources. In a traditional app server deployment, bindings are declared in config files like Tomcat's `context.xml`:
+
+```xml
+<Resource name="jdbc/myDb"
+          auth="Container"
+          type="javax.sql.DataSource"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://localhost:5432/mydb"
+          username="appuser"
+          password="secret"
+          maxTotal="20" />
+```
+
+The server reads this at startup and binds the configured `DataSource` into the JNDI tree. The application then looks it up - it never sees the username or password directly.
+
+---
+
+## Looking Up JNDI Objects
+
+**Lookup** is the developer-facing half of the equation. Given a name, `Context.lookup()` traverses the naming tree and returns the bound object. The result is typed as `Object`, so you must cast it to the expected type.
+
+```java
+Context ctx = new InitialContext();
+DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/myDb");
+```
+
+You can also **list** the contents of a context to see what names are bound under it - useful for debugging:
+
+```java
+NamingEnumeration<NameClassPair> list = ctx.list("java:comp/env/jdbc");
+while (list.hasMore()) {
+    System.out.println(list.next().getName());
+}
+```
+
+In Spring, you rarely call `lookup()` directly. Spring wraps it in `JndiTemplate` or `JndiObjectFactoryBean`, which handle the `InitialContext` lifecycle and exception translation for you. But under the hood, it's always the same `Context.lookup()` call.
+
+---
+
+## Common Exceptions
+
+JNDI operations throw checked exceptions from the `javax.naming` package. Knowing what each one means saves significant debugging time.
+
+**`NamingException`** is the base class for all JNDI exceptions. If you see a subclass you don't recognize, check its parent - it's always a `NamingException`.
+
+**`NameNotFoundException`** is the most common one in practice. It means the name you passed to `lookup()` doesn't exist in the naming tree. This almost always means one of three things: the resource was never bound on the server, the JNDI name in your code doesn't match what ops configured, or the application hasn't been restarted since the binding was added.
+
+```
+javax.naming.NameNotFoundException: jdbc/myDb not found
+```
+
+**`NoInitialContextException`** means JNDI couldn't establish a connection to a naming service at all. In a Spring Boot embedded Tomcat app, this typically means JNDI support wasn't enabled. In a WAR deployment, it usually means the app isn't running inside an app server context.
+
+```
+javax.naming.NoInitialContextException: Need to specify class name in environment
+    or system property, or in an application resource file: java.naming.factory.initial
+```
+
+**`CommunicationException`** indicates a network-level failure connecting to a remote naming service (relevant when using LDAP or remote JNDI providers).
+
+**`AuthenticationException`** means the credentials provided to connect to the naming service were rejected.
+
+**`NamingSecurityException`** is thrown when a lookup succeeds in finding the name, but the caller doesn't have permission to access it.
+
+A practical tip: when you get a `NameNotFoundException`, before digging into code, verify what's actually bound on the server. On Tomcat, check `context.xml`. On WildFly, the admin console's JNDI tree view shows every bound name. Confirming the name exists - and matches exactly, including case - eliminates the most common source of JNDI bugs.
 
 ---
 
@@ -130,11 +229,6 @@ public class JndiDataSourceConfig {
 
 Either way, the rest of your application just injects `DataSource` normally - nothing in the service or repository layer needs to know JNDI is involved.
 
----
-
-## Security Note: JNDI and Log4Shell
-
-Worth knowing if you're teaching this: the Log4Shell vulnerability (CVE-2021-44228, December 2021) exploited JNDI's ability to load remote objects via LDAP when attacker-controlled strings were logged by Log4j 2. This was not a flaw in JNDI's design for credential management - it was a flaw in allowing arbitrary remote classloading through JNDI lookups in a logging library. Modern JDKs (8u191+, 11.0.1+) disabled remote class loading via JNDI by default. Still, it's a useful reminder that JNDI is a powerful mechanism and its scope should be deliberately locked down in production.
 
 ---
 
@@ -160,7 +254,7 @@ Understanding where JNDI breaks down is just as important as knowing how to use 
 
 ## Better Strategies for Managing Secrets
 
-JNDI's limitations make it a poor fit outside of traditional app server deployments. Here are the leading alternatives, roughly in order of capability.
+JNDI's limitations make it a poor fit outside of traditional app server deployments. Here are some alternatives:
 
 ### 1. Environment Variables
 
@@ -205,3 +299,21 @@ For more robust secret management, other widely-used strategies include **HashiC
 ## Summary
 
 JNDI solves a real problem - keeping credentials out of application code and giving ops a clean, auditable boundary for secret management - but it is fundamentally an app-server-era solution. In modern microservices and cloud deployments, Vault or a cloud-native secret manager (often paired with Kubernetes External Secrets Operator) gives you the same separation of concerns with the addition of dynamic secrets, automatic rotation, and first-class audit trails. For Spring Boot specifically, the `spring.datasource.jndi-name` shortcut is the lowest-friction path into JNDI, while `spring-cloud-starter-vault-config` is the lowest-friction path into production-grade secret management.
+
+---
+
+## Discussion Questions
+
+1. **JNDI as a concept.** JNDI is described as a "naming and directory interface." In your own words, what problem does it solve? What would a developer have to do instead if JNDI didn't exist?
+
+2. **Names and the naming tree.** Why does JNDI use a hierarchical name like `java:comp/env/jdbc/myDb` rather than a simple flat key like `myDb`? What does each segment of that path give you that a flat key wouldn't?
+
+3. **Context and scope.** Two different applications are deployed to the same Tomcat server. Both define a resource under `java:comp/env/jdbc/appDb`. Will they conflict? Explain why or why not using your understanding of how Context scoping works.
+
+4. **Binding vs lookup.** What is the difference between binding and looking up a JNDI object? Which side does the developer own, and which side does ops own? Why is that split valuable?
+
+5. **Common exceptions.** You deploy a new WAR and the application fails to start with a `NameNotFoundException`. Walk through the steps you'd take to diagnose and fix it. What are the most likely causes?
+
+6. **JNDI and Spring Boot.** A teammate suggests using JNDI to manage the database credentials in your new Spring Boot microservice. What questions would you ask them before agreeing? Under what conditions would JNDI actually be the right call?
+
+7. **Alternatives.** What are the main weaknesses of environment variables as a secret management strategy compared to JNDI? What do both approaches still fail to provide that something like HashiCorp Vault does?
