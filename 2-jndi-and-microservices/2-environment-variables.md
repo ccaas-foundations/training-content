@@ -37,7 +37,7 @@ Use this when you want the variable available to all projects and all terminals 
 5. Click OK through all dialogs
 6. **Restart any open terminals or IntelliJ** - existing processes won't pick up the change
 
-![setting env var in system](./system_env.jpg)
+![setting env var in system](./2-microservices-notes-images/system_env.jpg)
 
 Verify it's set by opening a new Command Prompt and running:
 
@@ -62,9 +62,9 @@ Use this when the variable is specific to one project, or you're juggling multip
 5. Click **+** and enter the variable name and value
 6. Click **OK** to save
 
-![run configuration menu option](./run-config-menu.jpg)
+![run configuration menu option](./2-environment-variables-images/run-config-menu.jpg)
 
-![set env var in intellij](./env-input.jpg)
+![set env var in intellij](./2-environment-variables-images/env-input.jpg)
 
 
 These variables are injected only when IntelliJ launches the app. They don't affect your terminal, other run configurations, or other projects.
