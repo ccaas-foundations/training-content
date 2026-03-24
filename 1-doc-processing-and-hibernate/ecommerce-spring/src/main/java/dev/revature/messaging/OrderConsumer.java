@@ -3,22 +3,16 @@ package dev.revature.messaging;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 import dev.revature.models.Order;
-import dev.revature.models.OrderStatus;
-import dev.revature.repositories.OrderRepository;
-import dev.revature.services.WarehouseAssignmentService;
+import dev.revature.services.OrderService;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.time.LocalDateTime;
 
 @Service
 public class OrderConsumer {
 
-    private final WarehouseAssignmentService warehouseAssignmentService;
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
-    public OrderConsumer(WarehouseAssignmentService warehouseAssignmentService, OrderRepository orderRepository){
-        this.warehouseAssignmentService = warehouseAssignmentService;
-        this.orderRepository = orderRepository;
+    public OrderConsumer(OrderService orderService){
+        this.orderService = orderService;
     }
 
     // listen for messages in our queue
@@ -28,12 +22,9 @@ public class OrderConsumer {
         JsonMapper jsonMapper = new JsonMapper();
         Order order = jsonMapper.readValue(orderString, Order.class);
         System.out.println(order);
-        order.setTimestamp(LocalDateTime.now());
-        order.setOrderStatus(OrderStatus.RECEIVED);
         // validate that the customer id exists -- we could create a service to do this, as well as other validation for the message or the state of our objects
-        Order assignedOrder = warehouseAssignmentService.assignWarehouseToOrder(order);
-        System.out.println(assignedOrder);
-        orderRepository.save(order);
+        Order processedOrder = orderService.processIncomingOrder(order);
+        System.out.println(processedOrder);
     }
 
 

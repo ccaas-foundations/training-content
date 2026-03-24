@@ -2,11 +2,11 @@ package dev.revature.services;
 
 import org.springframework.stereotype.Service;
 import dev.revature.models.Order;
-import dev.revature.models.OrderStatus;
 import dev.revature.models.Warehouse;
 import dev.revature.repositories.WarehouseRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WarehouseAssignmentService {
@@ -17,17 +17,12 @@ public class WarehouseAssignmentService {
         this.warehouseRepository = warehouseRepository;
     }
 
-
-    public Order assignWarehouseToOrder(Order order){
+    public Optional<Warehouse> findWarehouseForOrder(Order order){
         List<Warehouse> warehouseCandidates = warehouseRepository.findByShippingRegionAndSku(order.getShippingRegion(), order.getSku());
-
-        if(!warehouseCandidates.isEmpty()){
-            order.setWarehouse(warehouseCandidates.getFirst());
-            order.setOrderStatus(OrderStatus.ASSIGNED);
-        } else {
-            order.setOrderStatus(OrderStatus.CANCELLED);
-        }
-        return order;
+        if(warehouseCandidates.isEmpty()){
+            return Optional.empty();
+        } 
+        return Optional.of(warehouseCandidates.getFirst());
     }
 
 
