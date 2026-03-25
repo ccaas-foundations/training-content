@@ -155,7 +155,7 @@ public class CatalogClient {
 
     public CatalogClient(RestClient.Builder builder) {
         this.restClient = builder
-            .baseUrl("http://localhost:8082/items")
+            .baseUrl("http://localhost:8082")
             .build();
     }
 }
