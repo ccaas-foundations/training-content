@@ -28,7 +28,7 @@ You paid for 15 module-instances to solve a 3-instance Catalog problem.
 
 ### Microservices under the same spike
 
-[!microservices spike](./2-microservices-notes-images/ms-spike.png)
+![microservices spike](./2-microservices-notes-images/ms-spike.png)
 
 Only the Catalog service scaled. Its load balancer split traffic across 3 Catalog instances - each sitting at 72%, right in the healthy zone. Every other service stayed exactly at baseline on a single instance. 
 Total: 7 instances vs 15. No wasted capacity.
@@ -264,6 +264,8 @@ public CatalogItem getItem(String itemId) {
 ---
 
 ## Core patterns in microservices architecture
+
+![ms architecture](./2-microservices-notes-images/spring_cloud_microservice_architecture.svg)
 
 ### 1. Service discovery
 
