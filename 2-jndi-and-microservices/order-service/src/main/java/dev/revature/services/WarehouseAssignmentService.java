@@ -11,17 +11,16 @@ import java.util.Optional;
 @Service
 public class WarehouseAssignmentService {
 
+    private final RestClient restClient;
 
-    public WarehouseAssignmentService(){
+    public WarehouseAssignmentService(RestClient.Builder restClientBuilder){
+        this.restClient = restClientBuilder.build();
     }
 
     public Optional<WarehouseSummary> findWarehouseForOrder(Order order){
         // we have to get this warehouse information from the warehouse service
             // we'll use RestClient to help us
         //RestClient restClient = RestClient.create();
-        RestClient restClient = RestClient.builder()
-                .baseUrl("http://localhost:8082")
-                .build();
 
         //String requestString = "/warehouse-fulfillment?region="+order.getWarehouseId()+"&sku="+order.getSku();
 
