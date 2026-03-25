@@ -1,10 +1,11 @@
 package dev.revature.messaging;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 import dev.revature.entities.Order;
 import dev.revature.services.OrderService;
-import tools.jackson.databind.json.JsonMapper;
 
 @Service
 public class OrderConsumer {
@@ -17,7 +18,7 @@ public class OrderConsumer {
 
     // listen for messages in our queue
     @JmsListener(destination = "order.fulfillment.queue")
-    public void processOrder(String orderString){
+    public void processOrder(String orderString) throws JsonProcessingException {
         System.out.println(orderString);
         JsonMapper jsonMapper = new JsonMapper();
         Order order = jsonMapper.readValue(orderString, Order.class);

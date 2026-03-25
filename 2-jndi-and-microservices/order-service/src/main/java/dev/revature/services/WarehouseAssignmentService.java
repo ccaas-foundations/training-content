@@ -1,7 +1,6 @@
 package dev.revature.services;
 
 import dev.revature.dtos.WarehouseSummary;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import dev.revature.entities.Order;
 import org.springframework.web.client.RestClient;
@@ -33,13 +32,13 @@ public class WarehouseAssignmentService {
                         .queryParam("sku", order.getSku())
                         .build()
                 )
-                    .exchange((request, response)->{
-                            if(response.getStatusCode().is2xxSuccessful()){
-                                WarehouseSummary ws = response.bodyTo(WarehouseSummary.class);
-                                return Optional.of(ws);
-                            }
-                            return Optional.empty();
-                        });
+                .exchange((request, response)->{
+                    if(response.getStatusCode().is2xxSuccessful()){
+                        WarehouseSummary ws = response.bodyTo(WarehouseSummary.class);
+                        return Optional.of(ws);
+                    }
+                    return Optional.empty();
+                });
     }
 
 
