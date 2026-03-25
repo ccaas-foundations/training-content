@@ -87,7 +87,6 @@ Manage all Spring versions through the BOM — do not specify versions on indivi
       controller/AgentController.java
       entity/Agent.java
       entity/CallCategory.java
-      entity/InboundCall.java
       repository/AgentRepository.java
       service/AgentService.java
     src/main/resources/
@@ -135,7 +134,7 @@ BILLING, TECHNICAL, SALES, GENERAL
 | receivedAt | LocalDateTime | Set on creation |
 | status | Enum | ASSIGNED, COMPLETED, ABANDONED |
 
----
+--
 
 ## Seed data
 
@@ -200,6 +199,14 @@ Core routing logic. For each valid `CallEvent`:
 
 Mark the method `@Transactional` — the persist and the status update must succeed or fail together.
 
+### CallController
+
+View call history - all calls and those handled by a particular agent
+
+| GET | /calls | InboundCall records - all call history |
+| GET | /calls?agent-id={id} | InboundCall records for this agent |
+
+
 ### Configuration
 
 Queue names and the agent-service URL must come from `application.yml` — do not hardcode.
@@ -231,7 +238,6 @@ Expose the following endpoints:
 | GET | /agents/{id} | Single agent with categories |
 | GET | /agents?status=AVAILABLE&category={category} | Available agents for a category |
 | PUT | /agents/{id}/status | Update status — body: `{ "status": "ON_CALL" }` |
-| GET | /calls?customer-id={id} | InboundCall records for this agent |
 | POST | /agents | Create agent (seeding and admin use) |
 
 Return 404 if an agent is not found. Use `ResponseStatusException`.
