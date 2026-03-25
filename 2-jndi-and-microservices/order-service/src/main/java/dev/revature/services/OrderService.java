@@ -25,14 +25,15 @@ public class OrderService {
         order.setOrderStatus(OrderStatus.RECEIVED);
 
         // we can just use the dto here for the summary (or our warehouse representation of our order-service)
-        Optional<WarehouseSummary> warehouse = warehouseAssignmentService.findWarehouseForOrder(order);
-        if(warehouse.isPresent()){
-            //order.setWarehouseId(warehouse.get());
+        Optional<WarehouseSummary> warehouseOptional = warehouseAssignmentService.findWarehouseForOrder(order);
+        if(warehouseOptional.isPresent()){
+            System.out.println("found a warehouse for order: "+ warehouseOptional.get());
+            order.setWarehouseId(warehouseOptional.get().getId());
             order.setOrderStatus(OrderStatus.ASSIGNED);
         } else {
+            System.out.println("no warehouse found");
             order.setOrderStatus(OrderStatus.CANCELLED);
         }
-
         return orderRepository.save(order);
     }
 

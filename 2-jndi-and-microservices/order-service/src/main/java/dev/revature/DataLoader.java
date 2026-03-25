@@ -1,7 +1,9 @@
 package dev.revature;
 
+import dev.revature.dtos.WarehouseSummary;
 import dev.revature.enums.OrderStatus;
 import dev.revature.enums.ShippingRegion;
+import dev.revature.services.WarehouseAssignmentService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import dev.revature.entities.*;
@@ -9,19 +11,21 @@ import dev.revature.repositories.CustomerRepository;
 import dev.revature.repositories.OrderRepository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
     private final CustomerRepository customerRepository;
-
-
     private final OrderRepository orderRepository;
 
-    public DataLoader(CustomerRepository customerRepository, OrderRepository orderRepository){
+    private final WarehouseAssignmentService warehouseAssignmentService;
+
+    public DataLoader(CustomerRepository customerRepository, OrderRepository orderRepository, WarehouseAssignmentService warehouseAssignmentService){
         this.customerRepository = customerRepository;
         this.orderRepository = orderRepository;
+        this.warehouseAssignmentService = warehouseAssignmentService;
     }
 
     @Override
@@ -87,6 +91,21 @@ public class DataLoader implements CommandLineRunner {
 
         Order persistedOrder = orderRepository.save(newOrder);
         System.out.println(persistedOrder);
+        */
+
+        /*
+        Order newOrder = new Order();
+        newOrder.setCustomer(c1);
+        newOrder.setShippingRegion(ShippingRegion.MIDWEST);
+        newOrder.setSku("socks");
+
+        Optional<WarehouseSummary> warehouseSummaryOptional = warehouseAssignmentService.findWarehouseForOrder(newOrder);
+
+        if(warehouseSummaryOptional.isEmpty()){
+            System.out.println("did not find a suitable warehouse");
+        } else {
+            System.out.println(warehouseSummaryOptional.get());
+        }
         */
 
     }
