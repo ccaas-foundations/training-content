@@ -34,3 +34,22 @@ eureka:
       defaultZone: http://localhost:8761/eureka
     register-with-eureka: true
     fetch-registry: true
+
+## configuration for our circuit breaker
+resilience4j:
+  retry:
+    instances:
+      warehouseServiceRetry:
+        max-attempts: 3
+        wait-duration: 500ms
+  circuitbreaker:
+    instances:
+      warehouseServiceCircuitBreaker:
+        sliding-window-size: 5
+        failure-rate-threshold: 60
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 2
+
+logging:
+  level:
+    io.github.resilience4j: DEBUG

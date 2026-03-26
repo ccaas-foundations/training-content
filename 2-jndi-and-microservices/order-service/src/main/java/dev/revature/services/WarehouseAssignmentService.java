@@ -1,6 +1,8 @@
 package dev.revature.services;
 
 import dev.revature.dtos.WarehouseSummary;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.stereotype.Service;
 import dev.revature.entities.Order;
 import org.springframework.web.client.RestClient;
@@ -17,6 +19,8 @@ public class WarehouseAssignmentService {
         this.restClient = restClientBuilder.build();
     }
 
+    @CircuitBreaker(name="warehouseServiceCircuitBreaker", fallbackMethod="warehouseFallback")
+    @Retry(name="warehouseServiceRetry")
     public Optional<WarehouseSummary> findWarehouseForOrder(Order order){
         // we have to get this warehouse information from the warehouse service
             // we'll use RestClient to help us
@@ -38,6 +42,12 @@ public class WarehouseAssignmentService {
                     }
                     return Optional.empty();
                 });
+    }
+
+    // define warehouseFallback method signature
+    public Optional<WarehouseSummary> warehouseFallback(Order order, Throwable t){
+        System.out.println("fallback method triggered " + t.getMessage());
+        return Optional.empty();
     }
 
 
