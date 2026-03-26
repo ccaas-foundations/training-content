@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: order-service #name of my route - this is not referring to anything specific
+          uri: lb://order-service #referencing our order-service
+          predicates:
+            - Path=/orders/**
+        - id: warehouse-service #name of my route - this is not referring to anything specific
+          uri: lb://warehouse-service #referencing our warehouse-service
+          predicates:
+            - Path=/warehouses/**
+        - id: warehouse-fulfillment #name of my route - this is not referring to anything specific
+          uri: lb://warehouse-service #referencing our warehouse-service
+          predicates:
+            - Path=/warehouse-fulfillment/**
