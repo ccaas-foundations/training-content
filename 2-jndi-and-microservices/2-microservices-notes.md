@@ -629,7 +629,7 @@ The fallback method is the graceful degradation path — what the service does w
 - Accept the **same parameters** as the original method
 - Have a **`Throwable`** as the final parameter (Resilience4j passes the cause)
 
-In this codebase, `warehouseFallback` returns `Optional.empty()`, which causes `OrderService` to set the order status to `CANCELLED` rather than throwing. The system degrades gracefully — orders are acknowledged and recorded, just not fulfilled until the warehouse service recovers.
+In our example, `warehouseFallback` returns `Optional.empty()`, which causes `OrderService` to set the order status to `CANCELLED` rather than throwing. The system degrades gracefully — orders are acknowledged and recorded, just not fulfilled until the warehouse service recovers.
 
 ### 5. Asynchronous messaging
 
