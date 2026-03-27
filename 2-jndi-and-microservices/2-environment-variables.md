@@ -37,7 +37,7 @@ Use this when you want the variable available to all projects and all terminals 
 5. Click OK through all dialogs
 6. **Restart any open terminals or IntelliJ** - existing processes won't pick up the change
 
-![setting env var in system](./2-microservices-notes-images/system_env.jpg)
+![setting env var in system](./2-environment-variables-images/system_env.jpg)
 
 Verify it's set by opening a new Command Prompt and running:
 
