@@ -306,6 +306,6 @@ All of the following must work end-to-end:
 - Publish a call with unrecognized category → defaults to GENERAL, routed to a GENERAL agent
 - Publish malformed XML → error logged, call-routing-service continues processing subsequent messages
 - `GET /agents/available?category=TECHNICAL` → returns JSON array of matching available agents
-- `GET /agents/{id}/calls` → returns list of `InboundCall` records for that agent
+- `GET /calls?agent-id={id}` → returns list of `InboundCall` records for that agent
 - `PUT /agents/{id}/status` with `WRAP_UP` → status updates, agent excluded from next routing query
 - Restart call-routing-service while broker is running → re-registers with Eureka, resumes consuming, no messages lost
