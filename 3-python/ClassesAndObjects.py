@@ -57,7 +57,7 @@ class Animal:
         return f"{self.name} has made a sound"
         
 
-class Cat(Animal): #Cat is inheriting from Animal, so cat is a child class
+class Cat(Animal, Dog): #Cat is inheriting from Animal, so cat is a child class
     def __init__(self, name, age, breed, color, hairLength):
         #call the parent class constructor using the super() method
         super().__init__(name, age)
