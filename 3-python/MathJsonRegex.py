@@ -88,7 +88,7 @@ print(re.findall(r"^The", SecondText)) #checks if the text starts with 'The'
 print(re.findall(r"at.$", SecondText)) #Checks if the text ends with 'at'
 
 #split() function splits a string at each match of a pattern
-SplitText = re.split("this","Split this, text into, words")
+SplitText = re.split("\s","Split this, text into, words") #\s represents spaces
 print("Split text: ", SplitText)
 
 #the sub() function replaces matches with a specified string
