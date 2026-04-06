@@ -178,8 +178,6 @@ Windows / Git Bash users: Prefix the command with winpty to enable interactive t
 winpty docker exec -it cassandra cqlsh
 ```
 
-Option B is probably cleaner since the rest of the doc is already structured with platform-
-
 Once connected, you'll see a prompt:
 
 ```
