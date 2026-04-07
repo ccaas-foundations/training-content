@@ -74,7 +74,7 @@ docker pull hello-world
 
 You'll see Docker downloading the image layer by layer. Once it's done, open Docker Desktop and navigate to the **Images** tab - you should see `hello-world` listed there. This is the image sitting on your machine, not yet running.
 
-![image in docker desktop](./docker-image.jpg)
+![image in docker desktop](./docker-images/docker-image.jpg)
 
 
 **Step 4 - Create and run a container from the image**
@@ -87,7 +87,7 @@ This creates a container from the `hello-world` image and runs it. You'll see a 
 
 Cassandra will be different. It's a database that needs to stay running and accept incoming connections, so we'll run it with a few extra flags to keep it alive in the background and expose its port.
 
-![container in docker desktop](./docker-container.jpg)
+![container in docker desktop](./docker-images/docker-container.jpg)
 
 ---
 
