@@ -72,10 +72,6 @@ Breaking down the primary key `(customer_id, placed_at)`:
 - `customer_id` - the **partition key**. All invoices for the same customer live on the same node. When you query a customer's order history, Cassandra goes directly to that partition.
 - `placed_at` - the **clustering column**. Within a customer's partition, invoices are sorted by placement time descending - newest first. This matches exactly how you'd want to display order history.
 
-### Why no invoice_id as a clustering column here?
-
-In this table, `placed_at` alone is sufficient to order rows. If two invoices were placed at exactly the same timestamp, you'd add `invoice_id` to break the tie - but for most real-world cases `placed_at` gives you the ordering you need. You'll see this trade-off in the demo.
-
 ### Composite partition keys
 
 The `warehouse_queue` table in the demo introduces a more advanced concept - a **composite partition key**:
