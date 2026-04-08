@@ -60,3 +60,10 @@ Thumbs.db
 *.tmp
 *.swp
 *.bak
+
+# ========================
+# Python files
+# ========================
+venv
+venv311
+.venv
