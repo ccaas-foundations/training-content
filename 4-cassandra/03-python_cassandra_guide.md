@@ -241,7 +241,7 @@ cluster.shutdown()
 
 ---
 
-## Full Minimal Example
+## Quick Example
 
 ```python
 from cassandra.cluster import Cluster

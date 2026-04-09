@@ -100,27 +100,32 @@ if __name__ == "__main__":
     assign(session, invoice2, "CHI-001")
 
     rows = session.execute("""
-                    SELECT * FROM invoice_events
+                    SELECT JSON * FROM invoice_events
 """)
     
     customer_rows = session.execute("""
-                    SELECT * FROM invoices_by_customer WHERE customer_id = %s
+                    SELECT JSON * FROM invoices_by_customer WHERE customer_id = %s
 """,[invoice1.customer_id])
     
     warehouse_rows = session.execute("""
-                    SELECT * FROM warehouse_queue WHERE warehouse = %s AND status = 'ASSIGNED'
+                    SELECT JSON * FROM warehouse_queue WHERE warehouse = %s AND status = 'ASSIGNED'
 """,[invoice1.warehouse])
     
+    [print(row) for row in rows]
+    
+    [print(row) for row in warehouse_rows]
+
+    [print(row) for row in customer_rows]
 
     # invoice id, event time, status and warehouse
-    for row in rows:
-        print(f"[INVOICE EVENT]: invoice_id={row.invoice_id}, event_time={row.event_time}, status={row.status}, warehouse={row.warehouse}")
+    # for row in rows:
+    #     print(f"[INVOICE EVENT]: invoice_id={row.invoice_id}, event_time={row.event_time}, status={row.status}, warehouse={row.warehouse}")
 
-    for row in customer_rows:
-        print(f"[INVOICES BY CUSTOMER]: customer_id={row.customer_id}, placed_at={row.placed_at}, invoice_id={row.invoice_id}, total={row.total}, item_skus={row.item_skus}")
+    # for row in customer_rows:
+    #     print(f"[INVOICES BY CUSTOMER]: customer_id={row.customer_id}, placed_at={row.placed_at}, invoice_id={row.invoice_id}, total={row.total}, item_skus={row.item_skus}")
 
-    for row in warehouse_rows:
-        print(f"[WAREHOUSE QUEUE: warehouse={row.warehouse}, status={row.status}, invoice_id={row.invoice_id}, customer_id={row.customer_id}, placed_at={row.placed_at}, total={row.total}")
+    # for row in warehouse_rows:
+    #     print(f"[WAREHOUSE QUEUE: warehouse={row.warehouse}, status={row.status}, invoice_id={row.invoice_id}, customer_id={row.customer_id}, placed_at={row.placed_at}, total={row.total}")
     
     cluster.shutdown()
 

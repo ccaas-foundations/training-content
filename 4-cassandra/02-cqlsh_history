@@ -2,6 +2,7 @@ desc keyspaces
 CREATE KEYSPACE ecommerce_analytics WITH replication = {'class': 'SimpleStrategy','replication_factor':1} ;
 desc keyspaces
 use ecommerce_analytics;
+
 CREATE TABLE invoice_events (
 invoice_id UUID,
 event_time TIMESTAMP,
@@ -9,9 +10,13 @@ status TEXT,
 warehouse TEXT,
 PRIMARY KEY (invoice_id, event_time)
 ) WITH CLUSTERING ORDER BY (event_time DESC);
+
 CREATE TABLE invoice_events ( invoice_id UUID, event_time TIMESTAMP, status TEXT, warehouse TEXT, PRIMARY KEY (invoice_id, event_time) ) WITH CLUSTERING ORDER BY (event_time DESC);
+
 DESC invoice_events
+
 select * from invoice_events;
+
 CREATE TABLE invoices_by_customer(
 customer_id TEXT,
 placed_at TIMESTAMP,
@@ -20,6 +25,7 @@ total DECIMAL,
 item_skus LIST<TEXT>,
 PRIMARY KEY (customer_id, placed_at))
 WITH CLUSTERING ORDER BY (placed_at DESC);
+
 CREATE TABLE invoices_by_customer( customer_id TEXT, placed_at TIMESTAMP, invoice_id UUID, total DECIMAL, item_skus LIST<TEXT>, PRIMARY KEY (customer_id, placed_at)) WITH CLUSTERING ORDER BY (placed_at DESC);
 desc tables
 exit
