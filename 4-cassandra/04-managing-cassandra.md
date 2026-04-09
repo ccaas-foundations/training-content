@@ -109,6 +109,8 @@ Cassandra's permission model has six distinct permissions:
 | Permission | What it allows |
 |---|---|
 | `SELECT` | Read rows from a table |
+| `SELECT_MASKED`/`UNMASK` | Determines whether a user can read masked data |
+| `SELECT` | Read rows from a table |
 | `MODIFY` | INSERT, UPDATE, DELETE, and TRUNCATE |
 | `CREATE` | Create keyspaces, tables, roles, indexes, functions |
 | `ALTER` | Alter keyspaces, tables, and roles |
