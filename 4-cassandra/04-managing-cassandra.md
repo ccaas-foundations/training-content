@@ -145,7 +145,7 @@ In practice, roles should be designed around job function: a reporting role gets
 
 ## Backups
 
-Cassandra's backup story is different from a relational database. There is no `pg_dump` equivalent that produces a single portable file. Backups work at the SSTable level - the on-disk files Cassandra uses to store data.
+Snapshots in Cassandra provide a fast, point-in-time copy of your data, making them a simple and reliable way to create a restore point before changes or as part of a backup strategy. Because snapshots operate at the storage level, they are lightweight and quick to create. In practice, snapshots are managed using Cassandra’s operational tool, `nodetool`, which allows you to create, list, and clear snapshots directly on each node.
 
 **Snapshots** - the primary backup mechanism:
 
@@ -190,7 +190,7 @@ nodetool refresh <keyspace> <table>
 
 This tells Cassandra to pick up the new files without a restart. For a full cluster restore, this runs on every node in token order.
 
-The operational overhead of Cassandra backup and restore is one reason many teams move to managed services like DataStax Astra or AWS Keyspaces. Understanding the snapshot mechanism and `nodetool` commands is important for working with self-managed clusters and for the exam.
+The operational overhead of Cassandra backup and restore is one reason many teams move to managed services like DataStax Astra or AWS Keyspaces. Understanding the snapshot mechanism and `nodetool` commands is important for working with self-managed cluster.
 
 ---
 
