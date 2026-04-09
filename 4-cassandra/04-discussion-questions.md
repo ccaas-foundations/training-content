@@ -1,3 +1,5 @@
+## Cassandra Discussion Questions
+
 1. Partition keys determine which node stores the data, and all rows with the same partition key are stored together. What happens to cluster performance if a partition key is poorly chosen - and what does a good partition key look like?
 
 2. We covered that ALLOW FILTERING exists but is a red flag in production. Why does Cassandra require you to provide the partition key in a query at all - what would have to happen under the hood if it didn't?
