@@ -1,0 +1,15 @@
+- structure should be similar
+  - model - still will need java objects to hold our data
+    - primary keys are made up now of multiple values 
+    - we'll need to create new classes to represent these composite keys, holding partition key(s) and clustering column(s)
+    - different annotations
+  - repository - handles interactions with our database
+    - Spring Data JPA - our repository interfaces extended JpaRepository
+    - with Cassandra we'll be extending a different interface
+  - controller
+    - these will stay the same
+- configuration
+  - application.yml
+    - jpa config switched for cassandra config
+  - pom.xml 
+    - different dependencies
