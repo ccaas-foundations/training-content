@@ -1,6 +1,8 @@
 # ClearCall - Conversation Analytics Platform
 ## Project Specification
 
+Project presentations will take place **April 21st 2026**.
+
 ---
 
 ## Overview
@@ -15,6 +17,7 @@ The system has four components you will build in sequence, each one building on 
 - A Spring Boot reporting service that queries Cassandra and exposes analytics over REST
 
 The transcript JSON schema defined in this document is the data contract for the entire project. All four components must agree on it before any code is written.
+
 
 ---
 
