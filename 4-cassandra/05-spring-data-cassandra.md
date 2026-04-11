@@ -39,16 +39,16 @@ public class InvoiceEvent {
 
 ### Column name conventions
 
-Spring Data Cassandra automatically converts camelCase field names to snake_case column names:
+Spring Data Cassandra automatically converts camelCase field names to lowercase column names:
 
 | Java field | CQL column |
 |---|---|
 | `status` | `status` |
-| `invoiceId` | `invoice_id` |
-| `placedAt` | `placed_at` |
-| `itemSkus` | `item_skus` |
+| `invoiceId` | `invoiceid` |
+| `placedAt` | `placedat` |
+| `itemSkus` | `itemskus` |
 
-`@Column` is only required when the desired CQL column name differs from what the convention would produce.
+If you want to conform to the naming conventions in Cassandra, you should use the `@Column` annotation to provide the snake_case name of the column. This is only required when the desired CQL column name differs from what the convention would produce.
 
 ### Supported field types
 
