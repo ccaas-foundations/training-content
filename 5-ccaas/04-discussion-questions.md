@@ -1,5 +1,4 @@
 # CCaaS Reading Response
-## Individual Exercise
 
 Read through the [AWS guide on Contact Center as a Service](https://aws.amazon.com/marketplace/solutions/business-applications/what-is/contact-center-as-a-service-ccaas), then discuss the following questions on your breakout rooms.
 
