@@ -31,7 +31,7 @@ A contact center is an operation where a company centralizes all of its customer
 
 Before any technology, understand what actually happens when a customer contacts a company:
 
-![basic flow](./flow.jpg)
+![basic flow](./ccaas-images/flow.jpg)
 
 Every piece of CCaaS technology you'll learn this week is automating or optimizing one of those five steps. Keep coming back to this list when something feels abstract.
 
@@ -39,7 +39,7 @@ Every piece of CCaaS technology you'll learn this week is automating or optimizi
 
 ## Part 2: A Brief History
 
-![timeline](./timeline.jpg)
+![timeline](./ccaas-images/timeline.jpg)
 
 
 ### Era 1: The Switchboard (1880s–1960s)
@@ -189,7 +189,7 @@ Without CRM, the agent is blind - meeting the customer for the first time on eve
 
 CRM and contact center platforms are almost always separate systems from separate vendors that communicate via API. The integration typically works like this:
 
-![crm vs cc](./crm_vs_contact_center.svg)
+![crm vs cc](./ccaas-images/crm_vs_contact_center.svg)
 
 When an interaction arrives, the contact center platform sends a request to the CRM API with the customer's phone number or email address. The CRM returns the customer record. That data gets surfaced to the agent in the seconds while the interaction is connecting - this is the screen pop discussed earlier.
 
@@ -224,7 +224,7 @@ The teams who maintained this infrastructure were specialized telecom engineers 
 
 CCaaS moves every component of the contact center infrastructure into the cloud and delivers it as a subscription service. The *capabilities* don't change - you still need routing, IVR, recording, workforce management, CRM integration. What changes completely is how those capabilities are delivered and what that means operationally.
 
-![ccaas comparison](./onprem_vs_ccaas_stack.svg)
+![ccaas comparison](./ccaas-images/onprem_vs_ccaas_stack.svg)
 
 **Capital expenditure becomes operating expense.** Instead of millions upfront, you pay per agent per month. A company can start with 20 seats and grow to 2,000 without a hardware conversation.
 
@@ -263,7 +263,7 @@ The ACD doesn't operate in isolation. By the time it makes a routing decision, i
 - **From ANI (Automatic Number Identification)** - caller ID, but what the system does with it matters. The ACD looks up the number in the CRM, finds a Platinum tier account, and elevates queue priority before the customer has spoken.
 - **From IVR authentication** - the IVR may have already verified the caller's identity and retrieved their account. That data travels with the interaction into the routing decision.
 
-![acd routing](./acd_routing_decision_tree.svg)
+![acd routing](./ccaas-images/acd_routing_decision_tree.svg)
 
 By the time the ACD routes an interaction, it often already knows: who is contacting, why they're contacting, how valuable they are to the business, and what kind of agent profile they need.
 
