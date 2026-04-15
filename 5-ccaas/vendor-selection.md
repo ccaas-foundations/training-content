@@ -22,7 +22,7 @@ What information is missing from this brief that would materially affect your re
 
 ---
 
-### Group 1 - Meridian Energy
+### Example 1 - Meridian Energy
 
 Meridian is a regional electric and gas utility serving 600,000 residential and 40,000 business customers across four states in the Pacific Northwest. They currently run an on-premise contact center with 280 agents using hardware that is over eight years old. The vendor who built the system no longer supports it.
 
@@ -34,7 +34,7 @@ Their primary success metrics: reduce abandoned calls during peak events, improv
 
 ---
 
-### Group 2 - Crestline Financial
+### Example 2 - Crestline Financial
 
 Crestline is a mid-size consumer bank with 3.2 million retail customers and a contact center of 1,400 agents across three locations in the US and one in the Philippines. They handle credit card support, mortgage inquiries, fraud alerts, and general account management.
 
@@ -48,7 +48,7 @@ Their primary success metrics: reduce after-call work time, reduce new agent ram
 
 ---
 
-### Group 3 - Parcel Now
+### Example 3 - Parcel Now
 
 Parcel Now is a last-mile delivery platform operating in 22 countries across North America, Europe, and Southeast Asia. They have three distinct customer populations: consumers who ordered packages, merchants who ship packages, and delivery drivers who are independent contractors. All three contact the support center, often about the same delivery, with very different questions and needs.
 
@@ -62,7 +62,7 @@ Their primary success metrics: increase IVR containment for driver calls from cu
 
 ---
 
-### Group 4 - Lumière
+### Example 4 - Lumière
 
 Lumière is a luxury skincare and fragrance brand operating in 38 countries with an average transaction value of $340. Their contact center has 90 agents and handles around 4,000 contacts per day across phone, email, chat, and WhatsApp. Their customer base expects a concierge-level experience - highly personalized, remembers past interactions, never feels transactional.
 

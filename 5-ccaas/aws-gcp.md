@@ -4,7 +4,7 @@
 
 ## Part 1: The market context
 
-You've learned what a contact center does, how the technology stack works, and what CCaaS means as a delivery model. Now we're going to look at two of the most significant platforms in that market - Amazon Connect and Google Customer Engagement Suite - not as products to memorize, but as real implementations of everything we've covered.
+You've learned what a contact center does, how the technology stack works, and what CCaaS means as a delivery model. Now we're going to look at two of the most significant platforms in that market - Amazon Connect and Google Customer Engagement Suite.
 
 ---
 
