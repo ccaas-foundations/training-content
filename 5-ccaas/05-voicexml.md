@@ -221,6 +221,4 @@ The most aggressive pattern: your backend generates VXML documents on the fly us
 | Intent | In NLU-enhanced IVRs, the classified action extracted from a caller's utterance (e.g., `check_balance`). |
 | Slots | Named parameters extracted alongside an intent. Intent is the what; slots are the structured data. Analogous to method name vs. arguments. |
 
----
 
-*ClearCall Unit - Revature CCaaS Foundations*
