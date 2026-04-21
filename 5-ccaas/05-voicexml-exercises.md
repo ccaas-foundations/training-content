@@ -1,6 +1,6 @@
 # VoiceXML Reading Exercises
 
-Go through each VoiceXML document, discussing the behavior you would expect from
+Go through each VoiceXML document, discussing the behavior you would expect from each.
 
 ---
 
